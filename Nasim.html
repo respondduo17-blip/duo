@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Deciding Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+        }
+        
+        .input-group input,
+        .input-group select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+        
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+        
+        .view-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .view-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .view-buttons button {
+            flex: 1;
+            padding: 12px;
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .view-buttons button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .view-buttons button:hover {
+            background: #e0e0e0;
+        }
+        
+        .view-buttons button.active:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .amount {
+            font-size: 2em;
+            font-weight: 700;
+        }
+        
+        .expense-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .expense-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .expense-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .expense-info {
+            flex: 1;
+        }
+        
+        .expense-category {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .expense-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .expense-amount {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 0 20px;
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .category-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-btn {
+            padding: 8px 15px;
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+        
+        .category-btn.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .category-btn:hover {
+            border-color: #667eea;
+        }
+        
+        @media (max-width: 1024px) {
+            .input-section {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Budget Manager</h1>
+            <p>Track and manage your daily and monthly expenses</p>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.5em; margin-bottom: 20px; color: #333;">Add New Expense</h2>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="expenseDate">Date</label>
+                    <input type="date" id="expenseDate" />
+                </div>
+                <div class="input-group">
+                    <label for="expenseCategory">Category</label>
+                    <select id="expenseCategory">
+                        <option value="">Select Category</option>
+                        <option value="Food">🍔 Food</option>
+                        <option value="Transport">🚗 Transport</option>
+                        <option value="Entertainment">🎬 Entertainment</option>
+                        <option value="Shopping">🛍️ Shopping</option>
+                        <option value="Utilities">💡 Utilities</option>
+                        <option value="Health">🏥 Health</option>
+                        <option value="Other">📌 Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="expenseAmount">Amount ($)</label>
+                    <input type="number" id="expenseAmount" placeholder="0.00" step="0.01" min="0" />
+                </div>
+                <div class="input-group">
+                    <label for="expenseDescription">Description</label>
+                    <input type="text" id="expenseDescription" placeholder="Optional notes" />
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="addExpense()">Add Expense</button>
+                <button class="btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="font-size: 1.5em; margin-bottom: 20px; color: #333;">View & Analyze</h2>
+            
+            <div class="view-section">
+                <div class="view-buttons">
+                    <button class="active" onclick="switchView('all')">All Expenses</button>
+                    <button onclick="switchView('daily')">Daily View</button>
+                    <button onclick="switchView('monthly')">Monthly View</button>
+                </div>
+            </div>
+
+            <div id="statsContainer" class="stats-section">
+                <div class="stat-card">
+                    <h3>Total Spending</h3>
+                    <div class="amount" id="totalAmount">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3 id="periodLabel">This Month</h3>
+                    <div class="amount" id="periodAmount">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Number of Items</h3>
+                    <div class="amount" id="itemCount">0</div>
+                </div>
+            </div>
+
+            <div id="expenseListContainer" class="expense-list scrollbar-hide">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <div>No expenses yet. Add your first expense to get started!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let expenses = [];
+        let currentView = 'all';
+
+        // Set today's date as default
+        document.getElementById('expenseDate').valueAsDate = new Date();
+
+        // Load expenses from localStorage
+        function loadExpenses() {
+            const saved = localStorage.getItem('expenses');
+            if (saved) {
+                expenses = JSON.parse(saved);
+                updateDisplay();
+            }
+        }
+
+        // Save expenses to localStorage
+        function saveExpenses() {
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+        }
+
+        // Add expense
+        function addExpense() {
+            const date = document.getElementById('expenseDate').value;
+            const category = document.getElementById('expenseCategory').value;
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const description = document.getElementById('expenseDescription').value;
+
+            if (!date || !category || !amount || amount <= 0) {
+                alert('Please fill in all required fields with valid values');
+                return;
+            }
+
+            expenses.push({
+                id: Date.now(),
+                date,
+                category,
+                amount,
+                description
+            });
+
+            saveExpenses();
+            updateDisplay();
+            clearForm();
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('expenseDate').valueAsDate = new Date();
+            document.getElementById('expenseCategory').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseDescription').value = '';
+        }
+
+        // Delete expense
+        function deleteExpense(id) {
+            expenses = expenses.filter(e => e.id !== id);
+            saveExpenses();
+            updateDisplay();
+        }
+
+        // Switch view
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-buttons button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            updateDisplay();
+        }
+
+        // Update display
+        function updateDisplay() {
+            updateStats();
+            updateExpenseList();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = expenses.reduce((sum, e) => sum + e.amount, 0);
+            document.getElementById('totalAmount').textContent = '$' + total.toFixed(2);
+
+            const today = new Date();
+            const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+            
+            let periodAmount = 0;
+            let periodLabel = 'This Month';
+
+            if (currentView === 'daily') {
+                const todayStr = today.toISOString().split('T')[0];
+                periodAmount = expenses
+                    .filter(e => e.date === todayStr)
+                    .reduce((sum, e) => sum + e.amount, 0);
+                periodLabel = 'Today';
+            } else if (currentView === 'monthly') {
+                periodAmount = expenses
+                    .filter(e => e.date.startsWith(currentMonth))
+                    .reduce((sum, e) => sum + e.amount, 0);
+                periodLabel = 'This Month';
+            } else {
+                periodAmount = total;
+                periodLabel = 'Total Spent';
+            }
+
+            document.getElementById('periodLabel').textContent = periodLabel;
+            document.getElementById('periodAmount').textContent = '$' + periodAmount.toFixed(2);
+            document.getElementById('itemCount').textContent = expenses.length;
+        }
+
+        // Update expense list
+        function updateExpenseList() {
+            const container = document.getElementById('expenseListContainer');
+            
+            let filteredExpenses = [...expenses];
+
+            if (currentView === 'daily') {
+                const today = new Date().toISOString().split('T')[0];
+                filteredExpenses = filteredExpenses.filter(e => e.date === today);
+            } else if (currentView === 'monthly') {
+                const today = new Date();
+                const currentMonth = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+                filteredExpenses = filteredExpenses.filter(e => e.date.startsWith(currentMonth));
+            }
+
+            // Sort by date (newest first)
+            filteredExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (filteredExpenses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div>No expenses in this view. Add one to get started!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredExpenses.map(expense => {
+                const dateObj = new Date(expense.date);
+                const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <div class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-category">${expense.category}</div>
+                            <div class="expense-details">
+                                ${formattedDate}${expense.description ? ' • ' + expense.description : ''}
+                            </div>
+                        </div>
+                        <div class="expense-amount">$${expense.amount.toFixed(2)}</div>
+                        <button class="btn-danger" onclick="deleteExpense(${expense.id})">Delete</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        loadExpenses();
+    </script>
+</body>
+</html>
